@@ -110,7 +110,7 @@ impl PasswordStore {
         };
 
         let mut child = Command::new("pass")
-            .args(&["-c", &name])
+            .args(&["clip-otp", "-c", &name])
             .stdout(Stdio::piped())
             .spawn()?;
 
