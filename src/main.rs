@@ -10,6 +10,7 @@ use dbus::arg::Variant;
 use dbus::blocking::stdintf::org_freedesktop_dbus::RequestNameReply;
 use dbus::tree::MethodErr;
 
+mod conf;
 mod proto;
 
 #[derive(Debug, Clone)]
@@ -109,8 +110,12 @@ impl PasswordStore {
             None => return Ok(()),
         };
 
-        let mut child = Command::new("pass")
-            .args(&["clip-otp", "-c", &name])
+        let conf = conf::load()?;
+        let (cmd, args) = conf.copy_cmd.split_first().unwrap();
+
+        let mut child = Command::new(cmd)
+            .args(args)
+            .arg(&name)
             .stdout(Stdio::piped())
             .spawn()?;
 
